@@ -17,21 +17,23 @@ use App\Http\Controllers\SettitngsController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['middleware' => ['auth']], function() {
+    Route::get('/', [ReportController::class, 'index'])->name('home');
 
-Route::get('/', [ReportController::class, 'index'])->name('home');
+    Route::prefix('income')->group(function () {
+        Route::get('create', [IncomeController::class, 'create'])->name('create-income');
+        Route::post('store', [IncomeController::class, 'store'])->name('store-income');
+    });
 
-Route::prefix('income')->group(function () {
-    Route::get('create', [IncomeController::class, 'create'])->name('create-income');
-    Route::post('store', [IncomeController::class, 'store'])->name('store-income');
+    Route::prefix('expense')->group(function () {
+        Route::get('create', [ExpenseController::class, 'create'])->name('create-expense');
+        Route::post('store', [ExpenseController::class, 'store'])->name('store-expense');
+    });
+
+    Route::prefix('settings')->group(function () {
+        Route::get('index', [SettitngsController::class, 'index'])->name('settings');
+    });
 });
 
-Route::prefix('expense')->group(function () {
-    Route::get('create', [ExpenseController::class, 'create'])->name('create-expense');
-    Route::post('store', [ExpenseController::class, 'store'])->name('store-expense');
-});
-
-Route::prefix('settings')->group(function () {
-    Route::get('index', [SettitngsController::class, 'index'])->name('settings');
-});
 
 Auth::routes();
